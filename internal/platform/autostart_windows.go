@@ -28,13 +28,18 @@ func (windowsPlatform) AutostartEnabled() bool {
 }
 
 // SetAutostart adds or removes the entry in HKCU\...\Run for this executable.
+// A new user profile may have no Run key yet: enabling creates it, and
+// disabling has nothing to remove.
 func (windowsPlatform) SetAutostart(enabled bool) error {
-	k, err := registry.OpenKey(registry.CURRENT_USER, runKeyPath, registry.SET_VALUE)
-	if err != nil {
-		return fmt.Errorf("cannot open the Run key: %w", err)
-	}
-	defer func() { _ = k.Close() }()
 	if !enabled {
+		k, err := registry.OpenKey(registry.CURRENT_USER, runKeyPath, registry.SET_VALUE)
+		if errors.Is(err, registry.ErrNotExist) {
+			return nil
+		}
+		if err != nil {
+			return fmt.Errorf("cannot open the Run key: %w", err)
+		}
+		defer func() { _ = k.Close() }()
 		if err := k.DeleteValue(autostartKey); err != nil && !errors.Is(err, registry.ErrNotExist) {
 			return err
 		}
@@ -44,5 +49,10 @@ func (windowsPlatform) SetAutostart(enabled bool) error {
 	if err != nil {
 		return err
 	}
+	k, _, err := registry.CreateKey(registry.CURRENT_USER, runKeyPath, registry.SET_VALUE)
+	if err != nil {
+		return fmt.Errorf("cannot open the Run key: %w", err)
+	}
+	defer func() { _ = k.Close() }()
 	return k.SetStringValue(autostartKey, `"`+exe+`"`)
 }
