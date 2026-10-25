@@ -5,7 +5,7 @@ How Spellcast versions and releases are made. The workflow is `.github/workflows
 ## Flow
 
 1. Pull requests are squash-merged, so each PR title becomes one Conventional Commit on `main`.
-2. On every push to `main`, [release-please](https://github.com/googleapis/release-please) checks the commits since the last release. If one of them is releasable (see below), it opens or updates the release PR `chore(main): release <version>`. That PR updates `CHANGELOG.md`, `.release-please-manifest.json` and the file and product version in `build/windows/info.json`.
+2. On every push to `main`, [release-please](https://github.com/googleapis/release-please) checks the commits since the last release. If one of them is releasable (see below), it opens or updates the release PR `chore(main): release <version>`. That PR updates `CHANGELOG.md`, `.release-please-manifest.json` and the file and product version in `build/windows/info.json`. Its description (a short header, the release notes and a footer, set in `release-please-config.json`) becomes the commit message of the release.
 3. A maintainer merges the release PR. release-please then tags the merge commit (`v<version>`) and creates the GitHub release with the changelog entry as its notes.
 4. The `build` job builds the app on `windows-latest` from the tag, checks that `git describe` gives the tag, and uploads the assets.
 
