@@ -4,6 +4,8 @@
   "include-v-in-tag": true,
   "include-component-in-tag": false,
   "bump-minor-pre-major": true,
+  "pull-request-header": "Merging this PR releases the version below.",
+  "pull-request-footer": "Release process: [docs/reference/releases.md](https://github.com/haraig/spellcast/blob/main/docs/reference/releases.md).",
   "changelog-sections": [
     { "type": "feat", "section": "Features" },
     { "type": "fix", "section": "Bug Fixes" },
