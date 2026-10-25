@@ -46,6 +46,10 @@ Details: [Build and run Spellcast](docs/how-to/build-and-run.md).
 - **Dependencies:** after a change to Go modules or npm packages (also in Dependabot PRs), run `task notices` and commit `THIRD_PARTY_NOTICES.txt`. CI fails if it is out of date.
 - **Tests:** new behavior comes with a test. OS-specific code lives only in `internal/platform`; everything else is tested with fakes and must build on every OS.
 
+## Releases
+
+Releases are automated with release-please: merged `feat:` and `fix:` PRs collect in a release PR, and merging that PR tags the release and uploads the Windows build. The PR title decides the version bump and the changelog entry. Details: [Releases](docs/reference/releases.md).
+
 ## Style
 
 - American English, plain and short sentences, in code, comments and docs.

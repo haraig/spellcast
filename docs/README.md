@@ -8,6 +8,8 @@ New here? Start with the [README](../README.md). To contribute, see [CONTRIBUTIN
 - [Your first 10 minutes with Spellcast](tutorials/first-ten-minutes.md)
 
 ## How-to guides
+- [Install Spellcast](how-to/install-spellcast.md)
+- [Update Spellcast](how-to/update-spellcast.md)
 - [Set up the development environment (WSL2, Linux, macOS)](how-to/set-up-dev-environment.md)
 - [Build and run spellcast](how-to/build-and-run.md)
 - [Set the Anthropic API key](how-to/set-the-api-key.md)
@@ -28,6 +30,7 @@ New here? Start with the [README](../README.md). To contribute, see [CONTRIBUTIN
 - [Keyboard shortcuts](reference/keyboard-shortcuts.md)
 - [Files and locations](reference/files-and-locations.md)
 - [Icon specification](reference/icon-specs.md)
+- [Releases](reference/releases.md)
 
 ## Explanation
 - [Architecture overview](explanation/architecture.md)

@@ -1,0 +1,112 @@
+name: Release
+
+# release-please keeps a release PR open while releasable commits (feat, fix,
+# perf, ...) are on main. Merging that PR tags the release and creates the
+# GitHub release; the build job then attaches the Windows assets.
+# See docs/reference/releases.md.
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+env:
+  TASK_VERSION: 3.54.0
+  WAILS_VERSION: v3.0.0-beta.34
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    outputs:
+      release_created: ${{ steps.release.outputs.release_created }}
+      tag_name: ${{ steps.release.outputs.tag_name }}
+      version: ${{ steps.release.outputs.version }}
+    steps:
+      # A GitHub App token, not GITHUB_TOKEN: PRs opened with GITHUB_TOKEN do
+      # not trigger workflows, so the release PR would never get its checks.
+      - uses: actions/create-github-app-token@64ab729a6294000f5aa4a4bc0b73d1f32bc45510 # v3.3.0
+        id: app-token
+        with:
+          client-id: ${{ vars.RELEASE_APP_CLIENT_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
+      - uses: googleapis/release-please-action@45996ed1f6d02564a971a2fa1b5860e934307cf7 # v5.0.0
+        id: release
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+  # Builds the release from the tag and uploads the exe, the zip and the checksums.
+  build:
+    needs: release-please
+    if: needs.release-please.outputs.release_created == 'true'
+    runs-on: windows-latest
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    env:
+      TAG: ${{ needs.release-please.outputs.tag_name }}
+      VERSION: ${{ needs.release-please.outputs.version }}
+    steps:
+      # The full history with tags: task build takes the version from git describe.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.release-please.outputs.tag_name }}
+          fetch-depth: 0
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v3.0.0
+        with:
+          version: ${{ env.TASK_VERSION }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install the Wails CLI
+        run: go install github.com/wailsapp/wails/v3/cmd/wails3@${{ env.WAILS_VERSION }}
+
+      - name: Build the app
+        run: task build
+
+      - name: The version is the tag
+        run: |
+          $described = git describe --tags --always --dirty
+          if ($described -ne $env:TAG) { throw "git describe gives '$described', expected '$env:TAG'" }
+
+      - name: Pack the assets
+        run: |
+          New-Item -ItemType Directory dist | Out-Null
+          Copy-Item bin/spellcast.exe dist/
+          $zip = "dist/spellcast-$env:VERSION-windows-amd64.zip"
+          Compress-Archive -Path bin/spellcast.exe, LICENSE, THIRD_PARTY_NOTICES.txt -DestinationPath $zip
+          # sha256sum format with LF line endings, so `sha256sum -c` works too.
+          $sums = Get-ChildItem dist -File | Sort-Object Name | ForEach-Object {
+            "$((Get-FileHash $_.FullName -Algorithm SHA256).Hash.ToLower())  $($_.Name)`n"
+          }
+          [IO.File]::WriteAllText("$($PWD.ProviderPath)/dist/SHA256SUMS.txt", -join $sums)
+          Get-Content dist/SHA256SUMS.txt
+
+      - uses: actions/attest-build-provenance@4d101475d8b20a2381f78447822ac1eab6504dd8 # v4.2.2
+        with:
+          subject-checksums: dist/SHA256SUMS.txt
+
+      - name: Upload to the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: gh release upload $env:TAG (Get-ChildItem dist -File).FullName --clobber
