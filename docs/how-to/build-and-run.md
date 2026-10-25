@@ -10,7 +10,7 @@ GOOS=windows task build
 
 This runs `go mod tidy`, generates icons and bindings, builds the frontend (`npm install`, `vite build`), generates the Windows resource file (`.syso`) and compiles `cmd/spellcast` to `bin/spellcast.exe`. The `.syso` file is removed again after the build.
 
-The build writes the version into the exe: `git describe --tags --always --dirty` (a tag, or the short commit SHA if there is no tag) and the short SHA. **Help** > **About Spellcast** and the first log line show them. Without Git, the version is `dev`.
+The build writes the version into the exe: `git describe --tags --always --dirty` (a tag, or the short commit SHA if there is no tag) and the short SHA. **Help** > **About Spellcast** and the first log line show them. Without Git, the version is `dev`. Release builds are made by the release workflow from a tag, see [Releases](../reference/releases.md).
 
 `THIRD_PARTY_NOTICES.txt` (the licenses of all bundled Go modules and npm packages) is embedded in the exe and shown in the About window. After a dependency change, regenerate it with `task notices` (`scripts/gen-notices.sh`) and commit it.
 

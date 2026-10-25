@@ -1,6 +1,7 @@
 <h1><img src="build/appicon.png" width="48" alt="" align="top"> Spellcast</h1>
 
 [![CI](https://github.com/haraig/spellcast/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/haraig/spellcast/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/haraig/spellcast)](https://github.com/haraig/spellcast/releases/latest)
 [![License: MIT](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 
 **Claude, right where you are typing.**
@@ -18,7 +19,9 @@ Select text in any app, press <kbd>CapsLock</kbd> + <kbd>1</kbd>, and the answer
 
 ## Install
 
-**Windows 10 and 11.** There is no release download yet: for now, [build Spellcast from source](docs/how-to/build-and-run.md). Installing with winget/UniGetUI is planned.
+**Windows 10 and 11.** Download [`spellcast.exe`](https://github.com/haraig/spellcast/releases/latest/download/spellcast.exe) from the [latest release](https://github.com/haraig/spellcast/releases/latest), put it in a folder of your choice, and start it. There is no installer. The exe is not code-signed, so Windows SmartScreen may warn on the first start: choose **More info** > **Run anyway**. Details, including how to check the download: [Install Spellcast](docs/how-to/install-spellcast.md). To update, see [Update Spellcast](docs/how-to/update-spellcast.md).
+
+Installing with winget/UniGetUI is planned. You can also [build Spellcast from source](docs/how-to/build-and-run.md).
 
 **macOS:** planned (Homebrew).
 
