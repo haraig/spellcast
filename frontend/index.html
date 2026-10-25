@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Spellcast</title>
+</head>
+<body>
+<!-- Result window (default view) -->
+<main id="result-view">
+    <header>
+        <span id="action"></span>
+        <span id="source"></span>
+    </header>
+    <div id="answer-scroll">
+        <div id="answer"></div>
+        <div id="notes" class="notes" hidden></div>
+        <div id="spinner" class="spinner" role="status" aria-label="Waiting for the answer" hidden></div>
+        <p id="note" class="note" hidden></p>
+        <p id="no-changes" class="note" hidden></p>
+        <p id="usage" class="usage" hidden></p>
+        <p id="error" class="error" role="alert" hidden></p>
+    </div>
+    <footer>
+        <button id="changes" type="button" class="toggle" aria-pressed="false" disabled>Show changes</button>
+        <button id="replace" type="button" class="primary" disabled>Replace</button>
+        <button id="copy" type="button" disabled>Copy</button>
+        <button id="close" type="button">Close</button>
+    </footer>
+</main>
+
+<!-- "Set API key" window (?view=apikey) -->
+<main id="apikey-view" hidden>
+    <form id="apikey-form">
+        <h1>Anthropic API key</h1>
+        <p id="apikey-current" class="muted"></p>
+        <label for="apikey-input">New key</label>
+        <input id="apikey-input" type="password" autocomplete="off" spellcheck="false" placeholder="sk-ant-…"/>
+        <p class="muted">Stored in the Windows Credential Manager (name: spellcast). It is never written to the config file or the log.</p>
+        <p id="apikey-message" role="status"></p>
+        <div class="buttons">
+            <button id="apikey-save" type="submit">Save</button>
+            <button id="apikey-cancel" type="button">Close</button>
+        </div>
+    </form>
+</main>
+<!-- "About Spellcast" window (?view=about) -->
+<main id="about-view" hidden>
+    <section id="about-main">
+        <div class="about-head">
+            <img id="about-icon" alt="" width="56" height="56"/>
+            <div>
+                <h1>Spellcast</h1>
+                <p id="about-version" class="muted"></p>
+            </div>
+        </div>
+        <p id="about-copyright"></p>
+        <p id="about-license"></p>
+        <p><a id="about-repo" href="#"></a></p>
+        <div class="buttons">
+            <button id="about-show-licenses" type="button">Third-party licenses</button>
+            <button id="about-close" type="button">Close</button>
+        </div>
+    </section>
+    <section id="about-licenses" hidden>
+        <h1>Third-party licenses</h1>
+        <pre id="about-notices" tabindex="0"></pre>
+        <div class="buttons">
+            <button id="about-back" type="button">Back</button>
+            <button id="about-close-2" type="button">Close</button>
+        </div>
+    </section>
+</main>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>

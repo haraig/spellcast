@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MsixPackagingToolTemplate
+    xmlns="http://schemas.microsoft.com/msix/packaging/msixpackagingtool/template/2022">
+    <Settings
+        AllowTelemetry="false"
+        ApplyACLsToPackageFiles="true"
+        GenerateCommandLineFile="true"
+        AllowPromptForPassword="false">
+    </Settings>
+    <Installer
+        Path="spellcast.exe"
+        Arguments=""
+        InstallLocation="C:\Program Files\spellcast\spellcast">
+    </Installer>
+    <PackageInformation
+        PackageName="spellcast"
+        PackageDisplayName="spellcast"
+        PublisherName="CN=spellcast"
+        PublisherDisplayName="spellcast"
+        Version="0.1.0.0"
+        PackageDescription="Process selected text with Claude">
+        <Capabilities>
+            <Capability Name="runFullTrust" />
+            
+        </Capabilities>
+        <Applications>
+            <Application
+                Id="com.spellcast.app"
+                Description="Process selected text with Claude"
+                DisplayName="spellcast"
+                ExecutableName="spellcast.exe"
+                EntryPoint="Windows.FullTrustApplication">
+                
+            </Application>
+        </Applications>
+        <Resources>
+            <Resource Language="en-us" />
+        </Resources>
+        <Dependencies>
+            <TargetDeviceFamily Name="Windows.Desktop" MinVersion="10.0.17763.0" MaxVersionTested="10.0.19041.0" />
+        </Dependencies>
+        <Properties>
+            <Framework>false</Framework>
+            <DisplayName>spellcast</DisplayName>
+            <PublisherDisplayName>spellcast</PublisherDisplayName>
+            <Description>Process selected text with Claude</Description>
+            <Logo>Assets\AppIcon.png</Logo>
+        </Properties>
+    </PackageInformation>
+    <SaveLocation PackagePath="spellcast.msix" />
+    <PackageIntegrity>
+        <CertificatePath></CertificatePath>
+    </PackageIntegrity>
+</MsixPackagingToolTemplate>

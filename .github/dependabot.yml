@@ -1,0 +1,46 @@
+version: 2
+
+# Commit message prefixes keep Dependabot's PR titles in Conventional Commits
+# form, so they pass the pr-title check.
+
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]
+    commit-message:
+      prefix: "ci(deps)"
+
+  - package-ecosystem: gomod
+    directory: /
+    schedule:
+      interval: weekly
+    labels: [dependencies]
+    commit-message:
+      prefix: "build(deps)"
+    ignore:
+      # Wails v3 is a beta; upgrade by hand.
+      - dependency-name: github.com/wailsapp/wails/v3
+
+  - package-ecosystem: gomod
+    directory: /tools/render-icon
+    schedule:
+      interval: weekly
+    labels: [dependencies]
+    commit-message:
+      prefix: "build(deps)"
+
+  - package-ecosystem: npm
+    directory: /frontend
+    schedule:
+      interval: weekly
+    # Matches min-release-age=7 in frontend/.npmrc: npm refuses younger versions.
+    cooldown:
+      default-days: 7
+    labels: [dependencies]
+    commit-message:
+      prefix: "build(deps)"
+    ignore:
+      # Wails v3 is a beta; upgrade by hand.
+      - dependency-name: "@wailsio/runtime"

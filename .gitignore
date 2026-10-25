@@ -1,0 +1,19 @@
+.task
+bin
+frontend/dist
+frontend/node_modules
+build/windows/nsis/MicrosoftEdgeWebview2Setup.exe
+# generated Windows resource objects
+*.syso
+
+frontend/bindings
+
+# Local agent workspaces (plans, mockups) and personal agent rules
+.superpowers/
+CLAUDE.local.md
+
+# Python bytecode (scripts/)
+__pycache__/
+
+# macOS Finder metadata
+.DS_Store

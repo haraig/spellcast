@@ -1,0 +1,16 @@
+# golangci-lint v2 configuration. Run with GOOS=windows (task lint), so the
+# Windows-only code is checked too.
+version: "2"
+
+linters:
+  default: standard # errcheck, govet, ineffassign, staticcheck, unused
+  settings:
+    errcheck:
+      exclude-functions:
+        # Win32 calls through LazyProc.Call always return the thread's last
+        # error, even on success. Callers check the r1 result where it matters.
+        - (*golang.org/x/sys/windows.LazyProc).Call
+
+formatters:
+  enable:
+    - gofmt

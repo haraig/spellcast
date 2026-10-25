@@ -1,0 +1,88 @@
+version: '3'
+
+vars:
+  APP_NAME: "spellcast"
+  BIN_DIR: "bin"
+  PACKAGE_MANAGER: '{{.PACKAGE_MANAGER | default "npm"}}'
+  VITE_PORT: '{{.WAILS_VITE_PORT | default 9245}}'
+  # Target OS for build/package/run. Defaults to the host OS, and is overridden
+  # by `wails3 build GOOS=...` (or the GOOS env var) for cross-compilation. The
+  # tasks below dispatch to the matching platform Taskfile via this variable.
+  GOOS: '{{.GOOS | default OS}}'
+
+includes:
+  common: ./build/Taskfile.yml
+  windows: ./build/windows/Taskfile.yml
+  darwin: ./build/darwin/Taskfile.yml
+
+tasks:
+  build:
+    summary: Builds the application
+    cmds:
+      - task: "{{.GOOS}}:build"
+
+  package:
+    summary: Packages a production build of the application
+    cmds:
+      - task: "{{.GOOS}}:package"
+
+  run:
+    summary: Builds and runs the application
+    cmds:
+      - task: build
+      - task: "{{.GOOS}}:run"
+
+  run:built:
+    summary: Runs the already-built application (used by wails3 dev)
+    cmds:
+      - task: "{{.GOOS}}:run"
+
+  frontend:dist:
+    summary: Builds frontend/dist if it is missing (go vet, go test and lint need it for go:embed)
+    status:
+      - test -f frontend/dist/index.html
+    cmds:
+      - task: common:build:frontend
+    env:
+      GOOS: windows
+
+  lint:
+    summary: Lints the Go code of the Windows build (golangci-lint, includes go vet)
+    deps: [frontend:dist]
+    cmds:
+      - golangci-lint run ./...
+    env:
+      GOOS: windows
+
+  test:
+    summary: Runs the Go tests (the Windows tests need WSL interop, see scripts/go-test.sh)
+    deps: [frontend:dist]
+    cmds:
+      - scripts/go-test.sh
+
+  notices:
+    summary: Regenerates THIRD_PARTY_NOTICES.txt (run after a dependency change)
+    deps: [frontend:dist]
+    cmds:
+      - scripts/gen-notices.sh
+
+  check:
+    summary: Runs every check that CI runs (lint, tests, frontend, links, vulnerabilities, go mod tidy)
+    cmds:
+      # First: frontend:dist runs a plain "go mod tidy", which would hide an untidy go.mod.
+      - go mod tidy -diff
+      - task: lint
+      - task: test
+      - npm --prefix frontend test
+      - npx --prefix frontend tsc --noEmit -p frontend
+      - scripts/check-doc-links.py
+      - task: notices
+      - git diff --exit-code THIRD_PARTY_NOTICES.txt
+      - GOOS=windows govulncheck ./...
+      - npm --prefix frontend audit --omit=dev
+
+  dev:
+    summary: Runs the application in development mode
+    cmds:
+      - wails3 dev -config ./build/config.yml -port {{.VITE_PORT}}
+

@@ -1,0 +1,188 @@
+name: CI
+
+# The job names are required checks of the main branch ruleset: rename them
+# only together with the ruleset.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+env:
+  TASK_VERSION: 3.54.0
+  WAILS_VERSION: v3.0.0-beta.34
+
+jobs:
+  # Lints and vets the Windows build. The app is Windows-only so far, so the
+  # Go checks run with GOOS=windows; they cross-compile, nothing runs.
+  lint:
+    runs-on: ubuntu-latest
+    env:
+      GOOS: windows
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v3.0.0
+        with:
+          version: ${{ env.TASK_VERSION }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      # Before the frontend build: it runs a plain "go mod tidy" (via the
+      # bindings task), which would hide an untidy go.mod.
+      - name: go mod tidy leaves no diff
+        run: go mod tidy -diff
+
+      # The tools run on the runner, so they are built for Linux.
+      - name: Install the Wails CLI
+        run: GOOS= CGO_ENABLED=0 go install github.com/wailsapp/wails/v3/cmd/wails3@${{ env.WAILS_VERSION }}
+
+      # go vet, lint and go:embed need frontend/dist (wails3 generates the bindings first).
+      - name: Build the frontend
+        run: task frontend:dist
+
+      - name: Regenerate the third-party notices
+        run: scripts/gen-notices.sh
+
+      # The build must not change tracked files (go.mod, go.sum, package-lock.json,
+      # THIRD_PARTY_NOTICES.txt: run `task notices` after a dependency change).
+      - name: The build leaves no diff
+        run: git diff --exit-code
+
+      - uses: golangci/golangci-lint-action@ba0d7d2ec06a0ea1cb5fa41b2e4a3ab91d21278a # v9.3.0
+        with:
+          version: v2.15.0
+
+      - run: go vet ./...
+
+      - name: Markdown links
+        run: scripts/check-doc-links.py
+
+  # Builds the app and runs every Go test on Windows, including the Windows-only ones.
+  test-windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v3.0.0
+        with:
+          version: ${{ env.TASK_VERSION }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install the Wails CLI
+        run: go install github.com/wailsapp/wails/v3/cmd/wails3@${{ env.WAILS_VERSION }}
+
+      # Builds the frontend first: go test needs frontend/dist (go:embed).
+      - name: Build the app
+        run: task build
+
+      - run: go test ./...
+
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: spellcast-windows
+          path: bin/spellcast.exe
+
+  # Keeps the OS-neutral packages portable: they must build and pass on Linux
+  # and macOS (no cgo, no Windows-only imports outside the platform stubs).
+  test-portable:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - run: go vet ./internal/core ./internal/config ./internal/platform ./internal/claude ./internal/usage
+
+      - run: go test ./internal/core ./internal/config ./internal/platform ./internal/claude ./internal/usage
+
+  frontend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - run: npm ci
+
+      - run: npm test
+
+      - run: npx tsc --noEmit
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: frontend/.nvmrc
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - uses: arduino/setup-task@c0bc642852239c2689f73f4ea6459c29405f3c52 # v3.0.0
+        with:
+          version: ${{ env.TASK_VERSION }}
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Install the Wails CLI and govulncheck
+        run: |
+          CGO_ENABLED=0 go install github.com/wailsapp/wails/v3/cmd/wails3@${{ env.WAILS_VERSION }}
+          go install golang.org/x/vuln/cmd/govulncheck@v1.9.0
+
+      # govulncheck loads every package, and the root package embeds frontend/dist.
+      - name: Build the frontend
+        run: task frontend:dist
+
+      - name: govulncheck (Windows build)
+        run: GOOS=windows govulncheck ./...
+
+      - name: npm audit (production dependencies)
+        run: npm --prefix frontend audit --omit=dev

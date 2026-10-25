@@ -1,0 +1,14 @@
+{
+	"fixed": {
+		"file_version": "0.1.0"
+	},
+	"info": {
+		"0409": {
+			"ProductVersion": "0.1.0",
+			"CompanyName": "Harald Aigner",
+			"FileDescription": "Process selected text with Claude",
+			"LegalCopyright": "© 2026 Harald Aigner",
+			"ProductName": "Spellcast"
+		}
+	}
+}

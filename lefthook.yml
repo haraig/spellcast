@@ -1,0 +1,30 @@
+# Git hooks. Install once per clone: lefthook install
+# pre-commit stays fast (about a second); pre-push runs lint and the tests.
+# Do not bypass them with --no-verify: fix the cause instead.
+
+pre-commit:
+  parallel: true
+  commands:
+    gofmt:
+      glob: "*.go"
+      run: |
+        unformatted=$(gofmt -l {staged_files})
+        if [ -n "$unformatted" ]; then
+          echo "Unformatted Go files. Fix them with: gofmt -w $unformatted"
+          echo "$unformatted"
+          exit 1
+        fi
+    doc-links:
+      glob: "*.md"
+      run: scripts/check-doc-links.py {staged_files}
+
+pre-push:
+  commands:
+    lint:
+      run: task lint
+    go-test:
+      run: task test
+    frontend-test:
+      run: npm --prefix frontend test
+    frontend-types:
+      run: npx --prefix frontend tsc --noEmit -p frontend
