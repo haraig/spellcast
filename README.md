@@ -8,7 +8,7 @@
 
 Select text in any app, press <kbd>CapsLock</kbd> + <kbd>1</kbd>, and the answer appears next to your text cursor. Translate, rewrite, explain or look up a word, then put the result back in place with one click. No copy and paste, no switching to another window.
 
-<!-- demo GIF: select a sentence in Outlook or Notepad, press CapsLock+1, the answer streams in next to the cursor, click Replace -->
+![Spellcast in Notepad: a German sentence is selected, CapsLock+1 opens the Spellcast window with the English translation, and Replace puts it in place of the selection](docs/images/demo.gif)
 
 - **Works in every app:** mail, browser, editor, chat, terminal.
 - **Your own actions:** up to nine prompts on <kbd>CapsLock</kbd> + <kbd>1</kbd> to <kbd>9</kbd>, in a plain config file.
