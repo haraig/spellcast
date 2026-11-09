@@ -405,14 +405,30 @@ button:disabled {
 
 #about-notices {
   flex: 1;
-  overflow: auto;
+  overflow-x: hidden;
+  overflow-y: auto;
   margin: 6px 0;
   padding: 8px;
   font-size: 0.85em;
-  white-space: pre-wrap;
   background: var(--surface);
   border: 1px solid var(--border);
   border-radius: 4px;
+}
+
+#about-notices p {
+  margin: 0 0 6px;
+}
+
+#about-notices summary {
+  padding: 2px 0;
+  cursor: pointer;
+  overflow-wrap: anywhere;
+}
+
+#about-notices pre {
+  margin: 4px 0 8px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 #about-view .buttons {

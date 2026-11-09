@@ -43,7 +43,7 @@ Details: [Build and run Spellcast](docs/how-to/build-and-run.md).
 - **Merging:** pull requests are squash-merged, so the title becomes the commit message. Your single commits inside the PR can be named freely.
 - **CI** must be green: lint, the Windows tests, the portable tests on Linux and macOS, the frontend, and the security scan.
 - **Docs change with the code.** A change to setup, behavior, config or a design decision updates the matching page in `docs/` in the same PR. The docs follow [Diátaxis](https://diataxis.fr): tutorials, how-to guides, reference and explanation stay on separate pages. Register new pages in [docs/README.md](docs/README.md).
-- **Dependencies:** after a change to Go modules or npm packages (also in Dependabot PRs), run `task notices` and commit `THIRD_PARTY_NOTICES.txt`. CI fails if it is out of date.
+- **Dependencies:** after adding or removing a Go module or npm package, run `task notices` and commit `THIRD_PARTY_NOTICES.txt`. CI fails if it is out of date. A version bump leaves it unchanged.
 - **Tests:** new behavior comes with a test. OS-specific code lives only in `internal/platform`; everything else is tested with fakes and must build on every OS.
 
 ## Releases

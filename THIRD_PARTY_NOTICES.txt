@@ -1,8 +1,8 @@
 Spellcast includes the following third-party software.
-Each entry names the component and its version, followed by its license.
+Each entry names the component and its license (SPDX ID), followed by the license text.
 
 ================================================================================
-Go standard library go1.27.3
+Go standard library (BSD-3-Clause)
 ================================================================================
 
 Copyright 2009 The Go Authors.
@@ -34,7 +34,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ================================================================================
-git.sr.ht/~jackmordaunt/go-toast/v2 v2.0.3
+git.sr.ht/~jackmordaunt/go-toast/v2 (MIT)
 ================================================================================
 
 This project is dual-licensed under the UNLICENSE or
@@ -100,7 +100,7 @@ For more information, please refer to <https://unlicense.org/>
 ---
 
 ================================================================================
-github.com/adrg/xdg v0.5.3
+github.com/adrg/xdg (MIT)
 ================================================================================
 
 The MIT License (MIT)
@@ -126,7 +126,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ================================================================================
-github.com/anthropics/anthropic-sdk-go v1.84.0
+github.com/anthropics/anthropic-sdk-go (MIT)
 ================================================================================
 
 Copyright 2023 Anthropic, PBC.
@@ -139,7 +139,7 @@ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLI
 
 
 ================================================================================
-github.com/bahlo/generic-list-go v0.2.0
+github.com/bahlo/generic-list-go (BSD-3-Clause)
 ================================================================================
 
 Copyright (c) 2009 The Go Authors. All rights reserved.
@@ -171,7 +171,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ================================================================================
-github.com/buger/jsonparser v1.1.2
+github.com/buger/jsonparser (MIT)
 ================================================================================
 
 MIT License
@@ -197,7 +197,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ================================================================================
-github.com/danieljoos/wincred v1.2.3
+github.com/danieljoos/wincred (MIT)
 ================================================================================
 
 The MIT License (MIT)
@@ -222,7 +222,7 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ================================================================================
-github.com/go-logr/logr v1.4.2
+github.com/go-logr/logr (Apache-2.0)
 ================================================================================
 
                                  Apache License
@@ -428,7 +428,7 @@ github.com/go-logr/logr v1.4.2
    limitations under the License.
 
 ================================================================================
-github.com/go-logr/stdr v1.2.2
+github.com/go-logr/stdr (Apache-2.0)
 ================================================================================
 
                                  Apache License
@@ -634,7 +634,7 @@ github.com/go-logr/stdr v1.2.2
    limitations under the License.
 
 ================================================================================
-github.com/go-ole/go-ole v1.3.0
+github.com/go-ole/go-ole (MIT)
 ================================================================================
 
 The MIT License (MIT)
@@ -660,7 +660,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ================================================================================
-github.com/invopop/jsonschema v0.14.0
+github.com/invopop/jsonschema (MIT)
 ================================================================================
 
 Copyright (C) 2014 Alec Thomas
@@ -684,7 +684,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ================================================================================
-github.com/pb33f/ordered-map/v2 v2.3.1
+github.com/pb33f/ordered-map/v2 (Apache-2.0)
 ================================================================================
 
                                  Apache License
@@ -890,7 +890,7 @@ github.com/pb33f/ordered-map/v2 v2.3.1
    limitations under the License.
 
 ================================================================================
-github.com/standard-webhooks/standard-webhooks/libraries v0.0.1
+github.com/standard-webhooks/standard-webhooks/libraries (MIT)
 ================================================================================
 
 The MIT License
@@ -916,7 +916,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
 
 ================================================================================
-github.com/tidwall/gjson v1.18.0
+github.com/tidwall/gjson (MIT)
 ================================================================================
 
 The MIT License (MIT)
@@ -941,7 +941,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ================================================================================
-github.com/tidwall/match v1.1.1
+github.com/tidwall/match (MIT)
 ================================================================================
 
 The MIT License (MIT)
@@ -966,7 +966,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ================================================================================
-github.com/tidwall/pretty v1.2.1
+github.com/tidwall/pretty (MIT)
 ================================================================================
 
 The MIT License (MIT)
@@ -991,7 +991,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 ================================================================================
-github.com/tidwall/sjson v1.2.5
+github.com/tidwall/sjson (MIT)
 ================================================================================
 
 The MIT License (MIT)
@@ -1017,7 +1017,7 @@ CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
 ================================================================================
-github.com/wailsapp/wails/v3 v3.0.0-beta.34
+github.com/wailsapp/wails/v3 (MIT)
 ================================================================================
 
 MIT License
@@ -1043,7 +1043,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ================================================================================
-github.com/yuin/goldmark v1.8.6
+github.com/yuin/goldmark (MIT)
 ================================================================================
 
 MIT License
@@ -1069,7 +1069,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ================================================================================
-github.com/zalando/go-keyring v0.2.8
+github.com/zalando/go-keyring (MIT)
 ================================================================================
 
 The MIT License (MIT)
@@ -1095,7 +1095,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 
 ================================================================================
-go.opentelemetry.io/auto/sdk v1.1.0
+go.opentelemetry.io/auto/sdk (Apache-2.0)
 ================================================================================
 
                                  Apache License
@@ -1301,7 +1301,7 @@ go.opentelemetry.io/auto/sdk v1.1.0
    limitations under the License.
 
 ================================================================================
-go.opentelemetry.io/otel v1.33.0
+go.opentelemetry.io/otel (Apache-2.0)
 ================================================================================
 
                                  Apache License
@@ -1507,7 +1507,7 @@ go.opentelemetry.io/otel v1.33.0
    limitations under the License.
 
 ================================================================================
-go.opentelemetry.io/otel/metric v1.33.0
+go.opentelemetry.io/otel/metric (Apache-2.0)
 ================================================================================
 
                                  Apache License
@@ -1713,7 +1713,7 @@ go.opentelemetry.io/otel/metric v1.33.0
    limitations under the License.
 
 ================================================================================
-go.opentelemetry.io/otel/trace v1.33.0
+go.opentelemetry.io/otel/trace (Apache-2.0)
 ================================================================================
 
                                  Apache License
@@ -1919,7 +1919,7 @@ go.opentelemetry.io/otel/trace v1.33.0
    limitations under the License.
 
 ================================================================================
-go.yaml.in/yaml/v4 v4.0.0-rc.2
+go.yaml.in/yaml/v4 (Apache-2.0 AND MIT)
 ================================================================================
 
 
@@ -1988,7 +1988,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ================================================================================
-golang.org/x/sync v0.23.0
+golang.org/x/sync (BSD-3-Clause)
 ================================================================================
 
 Copyright 2009 The Go Authors.
@@ -2020,7 +2020,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ================================================================================
-golang.org/x/sys v0.49.0
+golang.org/x/sys (BSD-3-Clause)
 ================================================================================
 
 Copyright 2009 The Go Authors.
@@ -2052,7 +2052,7 @@ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 ================================================================================
-gopkg.in/yaml.v3 v3.0.1
+gopkg.in/yaml.v3 (Apache-2.0 AND MIT)
 ================================================================================
 
 
@@ -2121,7 +2121,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 ================================================================================
-@types/trusted-types 2.0.7
+@types/trusted-types (MIT)
 ================================================================================
 
     MIT License
@@ -2147,13 +2147,13 @@ limitations under the License.
     SOFTWARE
 
 ================================================================================
-@wailsio/runtime 3.0.0-beta.34
+@wailsio/runtime (MIT)
 ================================================================================
 
-License: MIT (the package ships no license file).
+The package ships no license file, only the license field "MIT".
 
 ================================================================================
-dompurify 3.4.17
+dompurify (MPL-2.0 OR Apache-2.0)
 ================================================================================
 
 
@@ -2734,7 +2734,7 @@ Exhibit B - "Incompatible With Secondary Licenses" Notice
   defined by the Mozilla Public License, v. 2.0.
 
 ================================================================================
-marked 18.1.1
+marked (MIT)
 ================================================================================
 
 # License information
