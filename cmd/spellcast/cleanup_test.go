@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"path/filepath"
 	"reflect"
 	"strings"
 	"testing"
@@ -25,8 +26,7 @@ func fakeDeps(calls *[]string, fail ...string) cleanupDeps {
 		CloseLog:         func() error { return step("close-log") },
 		RemoveAll:        func(path string) error { return step("remove " + path) },
 		ConfigDir:        `C:\cfg`,
-		LogDir:           `C:\log`,
-		WebViewDir:       `C:\webview`,
+		LocalDir:         `C:\local`,
 	}
 }
 
@@ -45,13 +45,13 @@ func TestCleanupPurge(t *testing.T) {
 	if err := cleanup(true, fakeDeps(&calls)); err != nil {
 		t.Fatal(err)
 	}
-	want := []string{"autostart", "notifier", "key", `remove C:\cfg`, `remove C:\webview`, "close-log", `remove C:\log`}
+	want := []string{"autostart", "notifier", "key", `remove C:\cfg`, "close-log", `remove C:\local`}
 	if !reflect.DeepEqual(calls, want) {
 		t.Errorf("calls = %v, want %v", calls, want)
 	}
 }
 
-func TestCleanupClosesLogBeforeRemovingLogDir(t *testing.T) {
+func TestCleanupClosesLogBeforeRemovingLocalDir(t *testing.T) {
 	var calls []string
 	_ = cleanup(true, fakeDeps(&calls))
 	closed, removed := -1, -1
@@ -59,7 +59,7 @@ func TestCleanupClosesLogBeforeRemovingLogDir(t *testing.T) {
 		switch c {
 		case "close-log":
 			closed = i
-		case `remove C:\log`:
+		case `remove C:\local`:
 			removed = i
 		}
 	}
@@ -71,8 +71,8 @@ func TestCleanupClosesLogBeforeRemovingLogDir(t *testing.T) {
 func TestCleanupRunsAllStepsAndJoinsErrors(t *testing.T) {
 	var calls []string
 	err := cleanup(true, fakeDeps(&calls, "key", `remove C:\cfg`))
-	if len(calls) != 7 {
-		t.Errorf("calls = %v, want all 7 steps", calls)
+	if len(calls) != 6 {
+		t.Errorf("calls = %v, want all 6 steps", calls)
 	}
 	if err == nil {
 		t.Fatal("no error")
@@ -81,6 +81,21 @@ func TestCleanupRunsAllStepsAndJoinsErrors(t *testing.T) {
 		if !strings.Contains(err.Error(), want) {
 			t.Errorf("error %q does not mention %q", err, want)
 		}
+	}
+}
+
+// The purge removes localDir, so the WebView2 data must live inside it.
+func TestWebViewDataDirIsInsideLocalDir(t *testing.T) {
+	local, err := localDir()
+	if err != nil {
+		t.Skip("no user cache directory:", err)
+	}
+	wv, err := webviewDataDir()
+	if err != nil {
+		t.Fatal(err)
+	}
+	if want := filepath.Join(local, "WebView2"); wv != want {
+		t.Errorf("webviewDataDir() = %q, want %q", wv, want)
 	}
 }
 

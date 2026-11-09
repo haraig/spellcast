@@ -66,6 +66,12 @@ func main() {
 	claudeClient := &clientHolder{}
 	claudeClient.Reload()
 
+	// Empty on error: Wails then uses its default folder.
+	webviewDir, err := webviewDataDir()
+	if err != nil {
+		slog.Error("no WebView2 data directory", "err", err)
+	}
+
 	app := application.New(application.Options{
 		Name:        appName,
 		Description: "Process selected text with Claude",
@@ -90,6 +96,7 @@ func main() {
 		Windows: application.WindowsOptions{
 			// The app lives in the tray; closing the result window must not quit it.
 			DisableQuitOnLastWindowClosed: true,
+			WebviewUserDataPath:           webviewDir,
 		},
 	})
 

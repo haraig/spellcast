@@ -9,16 +9,35 @@ import (
 // logFile is the open log file (nil if logging goes to stderr).
 var logFile *os.File
 
-// setupLogging writes slog output to <UserCacheDir>/spellcast/spellcast.log
-// (Windows: %LocalAppData%\spellcast). The GUI exe has no console.
-// It returns the log path; on failure logging stays on stderr.
-func setupLogging() string {
+// localDir is the folder for what the machine can recreate: the log and the
+// WebView2 user data (<UserCacheDir>/spellcast, Windows: %LocalAppData%\spellcast).
+// The settings stay in config.Dir.
+func localDir() (string, error) {
 	base, err := os.UserCacheDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(base, "spellcast"), nil
+}
+
+// webviewDataDir is the WebView2 user data folder, inside localDir. Without it,
+// Wails would use %AppData%\<exe name>: a roaming folder named after the exe.
+func webviewDataDir() (string, error) {
+	dir, err := localDir()
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, "WebView2"), nil
+}
+
+// setupLogging writes slog output to spellcast.log in localDir. The GUI exe
+// has no console. It returns the log path; on failure logging stays on stderr.
+func setupLogging() string {
+	dir, err := localDir()
 	if err != nil {
 		slog.Error("no log directory", "err", err)
 		return ""
 	}
-	dir := filepath.Join(base, "spellcast")
 	path := filepath.Join(dir, "spellcast.log")
 	if err := os.MkdirAll(dir, 0o755); err != nil {
 		slog.Error("cannot create log directory", "err", err)

@@ -7,7 +7,7 @@ Spellcast has no installer. Uninstalling means: remove the autostart entry, opti
 1. Click the tray icon and choose **Help** > **Remove from Windows…**.
 2. Choose one:
    - **Remove**: removes the autostart entry and the notification registration. Your settings and API key stay, so a later install picks them up.
-   - **Remove and delete my settings**: also deletes the config folder (`%AppData%\spellcast`), the WebView2 data (`%AppData%\spellcast.exe`), the log folder (`%LocalAppData%\spellcast`) and the API key in the Windows Credential Manager.
+   - **Remove and delete my settings**: also deletes the config folder (`%AppData%\spellcast`), the folder with the log and the WebView2 data (`%LocalAppData%\spellcast`) and the API key in the Windows Credential Manager.
    - **Cancel**: changes nothing.
 3. Spellcast quits and then does the cleanup. Delete `spellcast.exe` yourself, or run `winget uninstall` if you installed it with winget.
 
