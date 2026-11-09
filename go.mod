@@ -7,7 +7,7 @@ toolchain go1.27.3
 require (
 	github.com/anthropics/anthropic-sdk-go v1.84.0
 	github.com/wailsapp/wails/v3 v3.0.0-beta.34
-	github.com/yuin/goldmark v1.8.6
+	github.com/yuin/goldmark v1.8.7
 	github.com/zalando/go-keyring v0.2.8
 	golang.org/x/sys v0.49.0
 	gopkg.in/yaml.v3 v3.0.1
