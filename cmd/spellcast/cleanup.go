@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"log/slog"
 	"os"
-	"path/filepath"
 	"time"
 
 	"github.com/wailsapp/wails/v3/pkg/application"
@@ -23,8 +22,7 @@ type cleanupDeps struct {
 	CloseLog         func() error
 	RemoveAll        func(path string) error
 	ConfigDir        string // %AppData%\spellcast: config.yaml, usage.json, window.json
-	LogDir           string // %LocalAppData%\spellcast: spellcast.log
-	WebViewDir       string // %AppData%\spellcast.exe: the WebView2 user data
+	LocalDir         string // %LocalAppData%\spellcast: spellcast.log, the WebView2 user data
 }
 
 // cleanup removes the autostart entry and the notification registration and,
@@ -44,9 +42,8 @@ func cleanup(purge bool, d cleanupDeps) error {
 	if purge {
 		step("API key", d.DeleteKey())
 		step("settings folder "+d.ConfigDir, d.RemoveAll(d.ConfigDir))
-		step("WebView2 folder "+d.WebViewDir, d.RemoveAll(d.WebViewDir))
 		step("closing the log", d.CloseLog())
-		step("log folder "+d.LogDir, d.RemoveAll(d.LogDir))
+		step("log and WebView2 folder "+d.LocalDir, d.RemoveAll(d.LocalDir))
 	}
 	return errors.Join(errs...)
 }
@@ -57,11 +54,7 @@ func realCleanupDeps(plat platform.Platform) (cleanupDeps, error) {
 	if err != nil {
 		return cleanupDeps{}, err
 	}
-	cache, err := os.UserCacheDir()
-	if err != nil {
-		return cleanupDeps{}, err
-	}
-	exe, err := os.Executable()
+	local, err := localDir()
 	if err != nil {
 		return cleanupDeps{}, err
 	}
@@ -74,9 +67,7 @@ func realCleanupDeps(plat platform.Platform) (cleanupDeps, error) {
 		// file open for a moment.
 		RemoveAll: retryRemoveAll(os.RemoveAll, 10, 200*time.Millisecond),
 		ConfigDir: cfgDir,
-		LogDir:    filepath.Join(cache, "spellcast"),
-		// Wails' default WebView2 user data folder: %AppData%\<exe name>.
-		WebViewDir: filepath.Join(filepath.Dir(cfgDir), filepath.Base(exe)),
+		LocalDir:  local,
 	}, nil
 }
 
