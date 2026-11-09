@@ -21,20 +21,49 @@ license_files() {
 	find -L "$1" -maxdepth 1 -type f | { grep -iE '/(licen[cs]e|copying|notice)([._-][^/]*)?$' || true; } | sort
 }
 
-# section NAME VERSION DIR [FALLBACK]: FALLBACK is printed when DIR has no license file.
-section() {
-	local files
-	files=$(license_files "$3")
-	if [ -z "$files" ] && [ -z "${4:-}" ]; then
-		echo "gen-notices: no license file for $1 in $3" >&2
+# license_id FILE...: the SPDX IDs of the licenses in FILE..., joined with " AND ".
+# An unknown license fails the script, so a person checks it before it ships.
+license_id() {
+	local text ids=()
+	text=$(cat "$@" | tr -s '[:space:]' ' ')
+	case $text in *"Apache License"*"Version 2.0"*) ids+=(Apache-2.0) ;; esac
+	case $text in *"Mozilla Public License"*"2.0"*) ids+=(MPL-2.0) ;; esac
+	case $text in
+	*"Redistribution and use in source and binary forms"*"Neither the name"*) ids+=(BSD-3-Clause) ;;
+	*"Redistribution and use in source and binary forms"*) ids+=(BSD-2-Clause) ;;
+	esac
+	case $text in *"Permission is hereby granted, free of charge"*) ids+=(MIT) ;; esac
+	case $text in *"Permission to use, copy, modify, and/or distribute"*) ids+=(ISC) ;; esac
+	if [ ${#ids[@]} -eq 0 ]; then
+		echo "gen-notices: unknown license in $*" >&2
 		exit 1
+	fi
+	local IFS=' '
+	echo "${ids[*]}" | sed 's/ / AND /g'
+}
+
+# section NAME DIR [LICENSE]: LICENSE is the SPDX expression from the package
+# metadata; without it, license_id reads it from the license files. A package
+# without license files gets a note in their place.
+# No version in the header: a version bump leaves the file unchanged.
+section() {
+	local files license
+	files=$(license_files "$2")
+	if [ -z "$files" ] && [ -z "${3:-}" ]; then
+		echo "gen-notices: no license file for $1 in $2" >&2
+		exit 1
+	fi
+	license=${3:-}
+	if [ -z "$license" ]; then
+		mapfile -t list <<<"$files"
+		license=$(license_id "${list[@]}")
 	fi
 	{
 		printf '%s\n' "================================================================================"
-		printf '%s %s\n' "$1" "$2"
+		printf '%s (%s)\n' "$1" "$license"
 		printf '%s\n\n' "================================================================================"
 		if [ -z "$files" ]; then
-			printf '%s\n\n' "$4"
+			printf '%s\n\n' "The package ships no license file, only the license field \"$license\"."
 		fi
 		while read -r f; do
 			[ -n "$f" ] || continue
@@ -46,31 +75,28 @@ section() {
 
 {
 	echo "Spellcast includes the following third-party software."
-	echo "Each entry names the component and its version, followed by its license."
+	echo "Each entry names the component and its license (SPDX ID), followed by the license text."
 	echo
 } >"$tmp"
 
 goroot=$(go env GOROOT)
 # Homebrew keeps the Go LICENSE one level above GOROOT.
 [ -n "$(license_files "$goroot")" ] || goroot=$(dirname "$goroot")
-# The version from go.mod's toolchain line, not the local Go: the same file on every machine.
-gover=$(sed -n 's/^toolchain //p' go.mod)
-section "Go standard library" "${gover:-$(go env GOVERSION)}" "$goroot"
+section "Go standard library" "$goroot"
 
 GOOS=windows go list -deps -tags production \
-	-f '{{with .Module}}{{if not .Main}}{{.Path}}	{{.Version}}	{{.Dir}}{{end}}{{end}}' \
+	-f '{{with .Module}}{{if not .Main}}{{.Path}}	{{.Dir}}{{end}}{{end}}' \
 	./cmd/spellcast | sort -u |
-	while IFS=$'\t' read -r path version dir; do
-		section "$path" "$version" "$dir"
+	while IFS=$'\t' read -r path dir; do
+		section "$path" "$dir"
 	done
 
 npm --prefix frontend ls --omit=dev --all --parseable 2>/dev/null | tail -n +2 | sort |
 	while read -r dir; do
 		name=$(node -p "require('$dir/package.json').name")
-		version=$(node -p "require('$dir/package.json').version")
-		license=$(node -p "require('$dir/package.json').license || ''")
-		# Some packages (for example @wailsio/runtime) ship no license file, only the field.
-		section "$name" "$version" "$dir" "${license:+License: $license (the package ships no license file).}"
+		# The SPDX expression without outer parentheses: "(MPL-2.0 OR Apache-2.0)".
+		license=$(node -p "(require('$dir/package.json').license || '').replace(/^\\((.*)\\)$/, '\$1')")
+		section "$name" "$dir" "$license"
 	done
 
 mv "$tmp" "$out"

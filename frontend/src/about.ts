@@ -1,5 +1,6 @@
 import { Events, Window } from "@wailsio/runtime";
 import iconUrl from "../../build/appicon.svg";
+import { parseNotices } from "./notices";
 
 // Matches AboutInfo in internal/ui/about.go.
 interface AboutInfo {
@@ -35,7 +36,7 @@ export function initAboutView() {
     $("about-copyright").textContent = info.copyright;
     $("about-license").textContent = info.license;
     $("about-repo").textContent = info.repoUrl.replace(/^https:\/\//, "");
-    notices.textContent = info.notices;
+    renderNotices(notices, info.notices);
     notices.scrollTop = 0;
     showLicenses(false);
   });
@@ -54,4 +55,26 @@ export function initAboutView() {
       void Window.Close();
     }
   });
+}
+
+// One collapsed entry per component: name and license, the text on click.
+function renderNotices(box: HTMLElement, text: string) {
+  const { intro, notices } = parseNotices(text);
+  const p = document.createElement("p");
+  p.textContent = intro;
+  box.replaceChildren(p);
+  for (const n of notices) {
+    const details = document.createElement("details");
+    const summary = document.createElement("summary");
+    const name = document.createElement("span");
+    name.textContent = n.name;
+    const license = document.createElement("span");
+    license.className = "muted";
+    license.textContent = n.license;
+    summary.append(name, " ", license);
+    const pre = document.createElement("pre");
+    pre.textContent = n.text;
+    details.append(summary, pre);
+    box.append(details);
+  }
 }

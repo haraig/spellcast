@@ -25,7 +25,7 @@ Versions the project is built and tested with (2026-10-25). Newer patch versions
 `marked` and `dompurify` (Markdown rendering and sanitizing, bundled by Vite, no CDN) are runtime dependencies. `@wailsio/runtime` is pinned to the exact version of the Wails Go module (`3.0.0-beta.34`); upgrade both together. `frontend/.npmrc` sets `min-release-age=7`: npm installs only versions published at least 7 days ago (Dependabot waits as long). TypeScript is 7.x (the Wails template's tsconfig needs 5 or later); check types with `npx tsc --noEmit` in `frontend/`.
 
 ## License notices
-`scripts/gen-notices.sh` builds `THIRD_PARTY_NOTICES.txt` from `go list -deps` (Windows build) and `npm ls --omit=dev`, with the license files of the Go module cache and `node_modules`. No extra tool is needed.
+`scripts/gen-notices.sh` builds `THIRD_PARTY_NOTICES.txt` from `go list -deps` (Windows build) and `npm ls --omit=dev`, with the license files of the Go module cache and `node_modules`. No extra tool is needed. Each entry names the component and its license as an SPDX ID: from the `license` field for npm packages, recognized from the license text for Go modules. An unknown license text stops the script. The entries have no versions, so a version bump leaves the file unchanged, and Dependabot PRs pass the CI check without a regenerated file.
 
 ## Go packages
 `github.com/yuin/goldmark` (Markdown to HTML for the `CF_HTML` clipboard format on Replace) is a direct dependency.
