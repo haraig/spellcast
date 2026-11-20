@@ -49,7 +49,7 @@ lefthook install   # in the repo
 
 The hooks are defined in `lefthook.yml`. Before each commit they check gofmt and the Markdown links of the staged files (about a second). Before each push they run `task lint`, `task test` and the frontend tests and type check. Do not bypass them with `--no-verify`; fix the cause instead.
 
-`go.mod` names the Go toolchain (`toolchain go1.27.3`); an older local Go downloads it automatically.
+`go.mod` names the Go toolchain (`toolchain go1.27.4`); an older local Go downloads it automatically.
 
 ## 4. Configure Git
 

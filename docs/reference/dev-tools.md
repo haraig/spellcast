@@ -19,7 +19,7 @@ Versions the project is built and tested with (2026-10-25). Newer patch versions
 | WebView2 runtime | part of Windows 11 | Windows | result window |
 | VS Code | any recent | Windows, opened from WSL with `code .` | editor |
 
-`task`, `wails3`, `golangci-lint`, `govulncheck` and `lefthook` are installed in `~/go/bin`. The Go toolchain is pinned in `go.mod` (`toolchain go1.27.3`).
+`task`, `wails3`, `golangci-lint`, `govulncheck` and `lefthook` are installed in `~/go/bin`. The Go toolchain is pinned in `go.mod` (`toolchain go1.27.4`).
 
 ## Frontend packages
 `marked` and `dompurify` (Markdown rendering and sanitizing, bundled by Vite, no CDN) are runtime dependencies. `@wailsio/runtime` is pinned to the exact version of the Wails Go module (`3.0.0-beta.34`); upgrade both together. `frontend/.npmrc` sets `min-release-age=7`: npm installs only versions published at least 7 days ago (Dependabot waits as long). TypeScript is 7.x (the Wails template's tsconfig needs 5 or later); check types with `npx tsc --noEmit` in `frontend/`.
