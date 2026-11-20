@@ -2,7 +2,7 @@ module spellcast/tools/render-icon
 
 go 1.27.0
 
-toolchain go1.27.3
+toolchain go1.27.4
 
 require (
 	github.com/srwiley/oksvg v0.0.0-20221011165216-be6e8873101c
